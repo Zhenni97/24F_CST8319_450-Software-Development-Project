@@ -20,14 +20,6 @@ export const categoriesData = [
         image: require('../../assets/images/sunset.png') // 随机图像
     },
     {
-        title: 'Appetizer',
-        image: require('../../assets/images/sunset.png') // 随机图像
-    },
-    {
-        title: 'Appetizer',
-        image: require('../../assets/images/sunset.png') // 随机图像
-    },
-    {
         title: 'Salad',
         image: require('../../assets/images/hiking.png') // 随机图像
     },
