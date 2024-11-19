@@ -1,5 +1,5 @@
 export const sortCategoryData = ['All', 'Most Popular', 'Saved List'];
-export const API_KEY = '6fcba2543a0e420c8ae846802c9e27c0'; // 替换为你的实际 API 密钥
+export const API_KEY = '061bbe08630a73855563c7654fc3001187636eaa'; // 替换为你的实际 API 密钥
 
 
 export const categoriesData = [
