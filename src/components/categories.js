@@ -5,43 +5,60 @@ import { theme } from '../theme';
 import { categoriesData } from '../constants';
 
 export default function Categories() {
-    const [showAll, setShowAll] = useState(false); // 状态来控制是否显示所有类别
+    const [showAll, setShowAll] = useState(false); // State to control whether to show all categories or not
 
-    // 切换显示状态
+    // Function to toggle between showing all categories or just a few
     const toggleShowAll = () => {
-        setShowAll(!showAll);
+        setShowAll(!showAll); // Toggle the state
     };
 
     return (
         <View className="space-y-5">
+            {/* Header with title and toggle button */}
             <View className="mx-5 flex-row justify-between items-center">
-                <Text style={{ fontSize: wp(4) }} className="font-semibold text-neutral-700">Categories</Text>
-                <TouchableOpacity onPress={toggleShowAll}>
-                    <Text style={{ fontSize: wp(4), color: theme.text }}>{showAll ? "Show Less" : "Show all"}</Text>
+                <Text style={{ fontSize: wp(4) }} className="font-semibold text-neutral-700">
+                    Categories
+                </Text>
+                <TouchableOpacity onPress={toggleShowAll}> {/* Button to toggle the view */}
+                    <Text style={{ fontSize: wp(4), color: theme.text }}>
+                        {showAll ? "Show Less" : "Show all"} {/* Change button text based on state */}
+                    </Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Scrollable category list */}
             <ScrollView
-                horizontal={!showAll} // 当 showAll 为 false 时，设置为水平滚动
+                horizontal={!showAll} // Make it horizontally scrollable when not showing all categories
                 contentContainerStyle={{ paddingHorizontal: 15 }}
                 showsHorizontalScrollIndicator={false}
             >
-                <View style={{ flexDirection: showAll ? 'row' : 'row', flexWrap: showAll ? 'wrap' : 'nowrap', justifyContent: 'space-between' }}>
+                <View
+                    style={{
+                        flexDirection: showAll ? 'row' : 'row', // Always in row direction
+                        flexWrap: showAll ? 'wrap' : 'nowrap', // Wrap items if showing all
+                        justifyContent: 'space-between'
+                    }}
+                >
                     {categoriesData.map((cat, index) => (
                         <TouchableOpacity
                             key={index}
                             className="flex items-center space-y-2"
                             style={{
-                                width: showAll ? '23%' : 'auto', // 显示所有时，每个元素宽度为 23%
-                                marginRight: showAll ? 0 : wp(4), // 增加横向布局时的间隔
-                                marginBottom: showAll ? wp(4) : 0, // 在显示所有时增加底部间隔
+                                width: showAll ? '23%' : 'auto', // Set width to 23% when showing all
+                                marginRight: showAll ? 0 : wp(4), // Add margin between items when not showing all
+                                marginBottom: showAll ? wp(4) : 0, // Add margin at the bottom when showing all
                             }}
                         >
+                            {/* Category image */}
                             <Image
                                 source={cat.image}
                                 className="rounded-3xl"
                                 style={{ width: wp(20), height: wp(19) }}
                             />
-                            <Text className="text-neutral-700 font-medium" style={{ fontSize: wp(3) }}>{cat.title}</Text>
+                            {/* Category title */}
+                            <Text className="text-neutral-700 font-medium" style={{ fontSize: wp(3) }}>
+                                {cat.title}
+                            </Text>
                         </TouchableOpacity>
                     ))}
                 </View>
