@@ -16,7 +16,6 @@ export default function HomeScreen() {
     const [destinationData, setDestinationData] = useState([]); // State to store fetched destination data
     const navigation = useNavigation();
 
-
     // Function to fetch destination data based on the selected sort category
     const fetchDestinations = async (sort) => {
         let apiUrl = '';
@@ -53,38 +52,9 @@ export default function HomeScreen() {
         }
     };
 
-    // Function to fetch destination data based on the selected category
-    const fetchDestinations2 = async (cate) => {
-        let apiUrl = '';
-
-        // Adjust API URL based on the selected category option
-        apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random&type=${cate}`;
-        try {
-            // Fetch data from the API
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-
-            // Format the fetched data to fit the required structure
-            const formattedData = data.results.map(recipe => ({
-                id: recipe.id,  // Recipe ID
-                title: recipe.title,  // Recipe title
-                duration: `${recipe.readyInMinutes} Minutes`,  // Preparation time
-                image: { uri: recipe.image },  // Recipe image
-                shortDescription: recipe.summary.replace(/<[^>]+>/g, ''), // Remove HTML tags from summary
-                longDescription: recipe.summary, // Full summary with HTML tags
-                price: recipe.pricePerServing || 0,  // Price per serving, default to 0 if missing
-            }));
-
-            // Update state with the formatted data
-            setDestinationData(formattedData);
-        } catch (error) {
-            console.error(error); // Log any errors during data fetching
-        }
-    };
-
     // Fetch all destinations on component mount
     useEffect(() => {
-        fetchDestinations('All', 'breakfast'); // Default sorting category
+        fetchDestinations('All'); // Default sorting category
     }, []); // Empty dependency array ensures this runs only once
 
     return (
@@ -113,16 +83,16 @@ export default function HomeScreen() {
                     </View>
                 </View>
 
+                {/* Categories section */}
+                <View className="mb-4">
+                    <Categories />
+                </View>
+
                 {/* Sort categories section */}
                 <View className="mb-4">
                     <SortCategories onSortChange={fetchDestinations} />
                 </View>
 
-                {/* Categories section */}
-                <View className="mb-4">
-                    <Categories onCateChange={fetchDestinations2}/>
-                </View>
-                
                 {/* Destinations section displaying fetched data */}
                 <View>
                     <Destinations destinationData={destinationData} />
