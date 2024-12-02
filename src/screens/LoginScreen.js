@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, Platform, TextInput } from 'react-native';
+import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, Platform, TextInput, Alert } from 'react-native';
 import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { ClockIcon, HeartIcon, MapPinIcon, SunIcon } from 'react-native-heroicons/solid';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { theme } from '../theme'; // Custom theme styles
+import { loginUser, registerUser } from '../services/database';
 
 // Determine if the platform is iOS for styling
 const ios = Platform.OS === 'ios';
@@ -18,18 +19,38 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   // Function to handle login logic
-  const handleLogin = () => {
-    console.log('Login pressed with email:', email, 'and password:', password);
-    // Navigate to the Home screen after successful login
+const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert('Error', 'Please fill in all fields');
+    return;
+  }
+
+  try {
+    await loginUser(email, password);
     navigation.navigate('Home');
-  };
+  } catch (error) {
+    Alert.alert('Login Failed', 'Invalid credentials');
+  }
+};
 
   // Function to handle register button logic
-  const handleRegister = () => {
-    console.log('Register pressed');
-    // Navigate to the registration page
-    navigation.navigate('RegisterPage');
-  };
+const handleRegister = async () => {
+  if (!email || !password) {
+    Alert.alert('Error', 'Please fill in all fields');
+    return;
+  }
+
+  try {
+    await registerUser(email, password);
+    Alert.alert(
+      'Registration Successful',
+      'Account created successfully! Please login.',
+      [{ text: 'OK', onPress: handleLogin }]
+    );
+  } catch (error) {
+    Alert.alert('Registration Failed', 'Email might already be registered');
+  }
+};
 
   return (
     <View className="bg-white flex-1">
