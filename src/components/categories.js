@@ -40,9 +40,9 @@ export default function Categories({ onCateChange }) {
                 <Text style={{ fontSize: wp(4) }} className="font-semibold text-neutral-700">
                     Categories
                 </Text>
-                <TouchableOpacity onPress={toggleShowAll}> {/* Button to toggle the view */}
+                <TouchableOpacity onPress={toggleShowAll}>{/* Button to toggle the view */}
                     <Text style={{ fontSize: wp(4), color: theme.text }}>
-                        {showAll ? "Show Less" : "Show all"} {/* Change button text based on state */}
+                        {showAll ? "Show Less" : "Show all"}{/* Change button text based on state */}
                     </Text>
                 </TouchableOpacity>
             </View>
