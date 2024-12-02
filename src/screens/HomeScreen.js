@@ -23,11 +23,11 @@ export default function HomeScreen() {
 
         // Adjust API URL based on the selected sorting option
         if (sort === 'All') {
-            apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random`;
+            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random`;
         } else if (sort === 'Most Popular') {
-            apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity`;
+            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity`;
         } else if (sort === 'Saved List') {
-            apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=time`;
+            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=time`;
         }
 
         try {
@@ -58,7 +58,7 @@ export default function HomeScreen() {
         let apiUrl = '';
 
         // Adjust API URL based on the selected category option
-        apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random&type=${cate}`;
+        apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random&type=${cate}`;
         try {
             // Fetch data from the API
             const response = await fetch(apiUrl);
