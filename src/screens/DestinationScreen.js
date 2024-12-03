@@ -7,6 +7,7 @@ import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { ClockIcon, HeartIcon, MapPinIcon, SunIcon } from 'react-native-heroicons/solid';
 import { useNavigation } from '@react-navigation/native';
 import { theme } from '../theme';
+import { saveFavorite } from '../database/database';
 
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : 'mt-10';
@@ -101,6 +102,7 @@ export default function DestinationScreen(props) {
             <TouchableOpacity
                 style={{ backgroundColor: theme.bg(0.8), height: wp(15), width: wp(50) }}
                 className="mb-6 mx-auto flex justify-center items-center rounded-full"
+                onPress={() => saveFavorite(item)} // call savefavorite
             >
                 <Text className="text-white font-bold" style={{ fontSize: wp(5.5) }}>
                     Save now  {/* Save button text */}

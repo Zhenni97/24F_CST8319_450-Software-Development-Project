@@ -1,71 +1,89 @@
-const sqlite3 = require('sqlite3').verbose();
+import * as SQLite from 'expo-sqlite';
 
 let sql;
 
 // connect to db
-const db = new sqlite3.Database('./app.db', sqlite3.OPEN_READWRITE, (err)=> {
-    if (err) return console.error(err.message);
-});
+const db = SQLite.openDatabase('app.db');
+
 // create table
-sql = `
-CREATE TABLE IF NOT EXISTS favorites (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    price REAL,
-    longDescription TEXT,
-    duration TEXT,
-    distance TEXT,
-    weather TEXT,
-    image TEXT
-);
-`;
+const createTable = () => {
+    db.transaction(tx => {
+        tx.executeSql(
+            `CREATE TABLE IF NOT EXISTS favorites (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                price REAL,
+                longDescription TEXT,
+                duration TEXT,
+                distance TEXT,
+                weather TEXT,
+                image TEXT
+            );`
+        );
+    });
+};
 
-db.run(sql, (err) => {
-    if (err) {
-        console.error(err.message);
-    } else {
-        console.log("Favorites table created successfully.");
-    }
-});
-
-const saveFavorite = (item) => {
-    sql = `
-    INSERT INTO favorites (user_id, title, price, longDescription, duration, distance, weather, image)
-    VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+const saveFavorite = (item, callback) => {
+    const sql = `
+        INSERT INTO favorites (user_id, title, price, longDescription, duration, distance, weather, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    db.run(sql,
-     [item.title, item.price, item.longDescription, item.duration, item.distance, item.weather, item.image],
-     function (err) => {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log("Favorite saved with this ID: ${this.lastID}");
-        }
+    db.transaction(tx => {
+        tx.executeSql(
+            sql,
+            [1, item.title, item.price, item.longDescription, item.duration, item.distance, item.weather, item.image],
+            (_, result) => {
+                console.log('Favorite saved:', result.insertId);
+                if (callback) callback(true, result.insertId); // Success callback with the inserted ID
+            },
+            (_, error) => {
+                console.error('Error saving favorite:', error);
+                if (callback) callback(false, null); // Error callback
+                return false;
+            }
+        );
     });
 };
 
-const fetchFavorites = () => {
-    const sql = "SELECT * FROM favorites WHERE user_id = 1"; // user doesn't have ids yet
+const fetchFavorites = (callback) => {
+    const sql = "SELECT * FROM favorites WHERE user_id = ?";
 
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log("Fetched favorites:", rows);
-        }
+    db.transaction(tx => {
+        tx.executeSql(
+            sql,
+            [1],  // Hardcoded user ID for now
+            (_, { rows }) => {
+                console.log("Fetched favorites:", rows._array);
+                if (callback) callback(rows._array);
+            },
+            (_, error) => {
+                console.error("Error fetching favorites:", error);
+                return false;
+            }
+        );
     });
 };
 
-const deleteFavorite = (id) => {
+const deleteFavorite = (id, callback) => {
     const sql = "DELETE FROM favorites WHERE id = ?";
 
-    db.run(sql, [id], function (err) {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log("Favorite with ID ${id} deleted.");
-        }
+    db.transaction(tx => {
+        tx.executeSql(
+            sql,
+            [id],
+            (_, result) => {
+                console.log(`Favorite with ID ${id} deleted.`);
+                if (callback) callback(true);
+            },
+            (_, error) => {
+                console.error("Error deleting favorite:", error);
+                if (callback) callback(false);
+                return false;
+            }
+        );
     });
 };
+
+export { saveFavorite, fetchFavorites, deleteFavorite };
