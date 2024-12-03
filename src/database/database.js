@@ -1,10 +1,11 @@
 import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
 
 let db;
 
 // connect to db
 const openDatabase = async () => {
-    db = await SQLite.openDatabaseAsync('../app.db');
+    db = await SQLite.openDatabaseAsync('app.db');
     await createTable();
 }
 
