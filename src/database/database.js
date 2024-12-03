@@ -60,7 +60,15 @@ const fetchFavorites = async (callback) => {
     try {
         const rows = await db.getAllAsync(sql, [1]);  // Hardcoded user ID for now
         console.log('Fetched favorites:', rows);
-        if (callback) callback(rows); // Pass the rows to the callback
+        if (callback) callback(rows.map(favorite => ({
+            id: favorite.id,
+            title: favorite.title,
+            duration: favorite.duration,
+            image: { uri: favorite.image }, // Ensure the image is properly set as a URI object
+            shortDescription: favorite.longDescription,
+            longDescription: favorite.longDescription,
+            price: favorite.price || 0,
+        }))); // Pass the rows to the callback
     } catch (error) {
         console.error('Error fetching favorites:', error);
     }

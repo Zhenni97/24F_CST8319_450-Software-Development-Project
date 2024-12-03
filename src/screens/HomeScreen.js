@@ -7,6 +7,7 @@ import SortCategories from '../components/sortCategories';
 import Destinations from '../components/destinations';
 import { useNavigation } from '@react-navigation/native';
 import { API_KEY } from '../constants'; // Importing the API key for Spoonacular API
+import { fetchFavorites } from '../database/database';
 
 // Check if the platform is iOS to adjust styles
 const ios = Platform.OS === 'ios';
@@ -27,7 +28,19 @@ export default function HomeScreen() {
         } else if (sort === 'Most Popular') {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity`;
         } else if (sort === 'Saved List') {
-            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=time`;
+            fetchFavorites((rows) => {
+                const formattedFavorites = rows.map(favorite => ({
+                    id: favorite.id,  //  ID
+                    title: favorite.title,  // title
+                    duration: favorite.duration,  // Duration
+                    image: { uri: favorite.image },  // Image URL
+                    shortDescription: favorite.longDescription, // Long description
+                    longDescription: favorite.longDescription, // Same as short description
+                    price: favorite.price || 0,  // Price per serving
+                }));
+                setDestinationData(formattedFavorites);
+            });
+            return;
         }
 
         try {
