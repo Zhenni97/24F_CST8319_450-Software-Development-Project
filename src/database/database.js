@@ -1,7 +1,12 @@
 import * as SQLite from 'expo-sqlite';
 
+let db;
+
 // connect to db
-const db = SQLite.openDatabaseSync('app.db');
+const openDatabase = async () => {
+    db = await SQLite.openDatabaseAsync('../app.db');
+    await createTable();
+}
 
 // create table
 const createTable = async () => {
@@ -71,5 +76,7 @@ const deleteFavorite = async (id, callback) => {
         if (callback) callback(false); // Error callback
     }
 };
+
+openDatabase();
 
 export { saveFavorite, fetchFavorites, deleteFavorite };
