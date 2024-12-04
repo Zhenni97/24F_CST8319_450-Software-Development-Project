@@ -23,7 +23,7 @@ const createTable = async () => {
                 distance TEXT,
                 weather TEXT,
                 image TEXT
-            ); TEST
+            );
         `);
     } catch (error) {
         console.error('Error creating table:', error);
