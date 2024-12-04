@@ -23,12 +23,12 @@ const createTable = async () => {
                 distance TEXT,
                 weather TEXT,
                 image TEXT
-            );
+            ); TEST
         `);
     } catch (error) {
         console.error('Error creating table:', error);
     }
-};
+}; 
 
 const saveFavorite = async (item, callback) => {
     const sql = `
@@ -64,7 +64,7 @@ const fetchFavorites = async (callback) => {
             id: favorite.id,
             title: favorite.title,
             duration: favorite.duration,
-            image: { uri: favorite.image }, // Ensure the image is properly set as a URI object
+            image: favorite.image, // Ensure the image is properly set as a URI object
             shortDescription: favorite.longDescription,
             longDescription: favorite.longDescription,
             price: favorite.price || 0,

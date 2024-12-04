@@ -2,7 +2,7 @@
 export const sortCategoryData = ['All', 'Most Popular', 'Saved List'];
 
 // Your Spoonacular API Key for making requests to fetch recipe data
-export const API_KEY = '23f189b8407c4c9ba2aa651a25daa381'; // Replace with your actual API key
+export const API_KEY = 'd90bdc0f89b0428eaf26488e109c93da'; // Replace with your actual API key
 
 
 // Array of categories with title and image for each category of recipes

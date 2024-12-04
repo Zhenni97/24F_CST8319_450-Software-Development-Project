@@ -135,7 +135,7 @@ export default function HomeScreen() {
                 <View className="mb-4">
                     <Categories onCateChange={fetchDestinations2}/>
                 </View>
-                
+
                 {/* Destinations section displaying fetched data */}
                 <View>
                     <Destinations destinationData={destinationData} />
