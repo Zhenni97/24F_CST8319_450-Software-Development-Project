@@ -7,6 +7,7 @@ let db;
 const openDatabase = async () => {
     db = await SQLite.openDatabaseAsync('app.db');
     await createTable();
+    // await resetDatabase();
 }
 
 // create table
@@ -64,7 +65,7 @@ const fetchFavorites = async (callback) => {
             id: favorite.id,
             title: favorite.title,
             duration: favorite.duration,
-            image: favorite.image, // Ensure the image is properly set as a URI object
+            image: { uri: favorite.image.replace('{uri=', '').replace('}', '') },
             shortDescription: favorite.longDescription,
             longDescription: favorite.longDescription,
             price: favorite.price || 0,
@@ -85,6 +86,30 @@ const deleteFavorite = async (id, callback) => {
         if (callback) callback(false); // Error callback
     }
 };
+
+// test function
+const resetDatabase = async (callback) => {
+
+    const sql = 'DELETE FROM favorites';
+
+    try {
+        await db.runAsync(sql); // Execute the SQL command
+
+        console.log('Database reset successfully.');
+
+        // Invoke the callback if provided
+        if (callback && typeof callback === 'function') {
+            callback(null, 'Success');
+        }
+    } catch (error) {
+        console.error('Error resetting the database:', error);
+
+        // Invoke the callback with an error if provided
+        if (callback && typeof callback === 'function') {
+            callback(error);
+        }
+    }
+}
 
 openDatabase();
 

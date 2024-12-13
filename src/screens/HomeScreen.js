@@ -33,7 +33,7 @@ export default function HomeScreen() {
                     id: favorite.id,  //  ID
                     title: favorite.title,  // title
                     duration: favorite.duration,  // Duration
-                    image: { uri: favorite.image },  // Image URL
+                    image: favorite.image,  // Image URL
                     shortDescription: favorite.longDescription, // Long description
                     longDescription: favorite.longDescription, // Same as short description
                     price: favorite.price || 0,  // Price per serving
