@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Image, Platform, TextInput, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MagnifyingGlassIcon } from 'react-native-heroicons/outline';
 import Categories from '../components/categories';
@@ -19,16 +19,16 @@ export default function HomeScreen() {
     const [selectedSort, setSelectedSort] = useState('All');
     const navigation = useNavigation();
 
-
     // Function to fetch destination data based on the selected sort category
     const fetchDestinations = async (sort = 'All', search = '') => {
         let apiUrl = '';
 
         // Adjust API URL based on the selected sorting option
-        if (search) {
+        if (sort === 'Most Popular' && search) {
+            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity&titleMatch=${encodeURIComponent(search)}`;
+        } else if (sort === 'All' && search) {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random&titleMatch=${encodeURIComponent(search)}`;
-        }
-        else if (sort === 'All') {
+        } else if (sort === 'All') {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random`;
         } else if (sort === 'Most Popular') {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity`;
@@ -132,8 +132,9 @@ export default function HomeScreen() {
                             onSubmitEditing={() => {
                                 if (selectedSort === 'Saved List') {
                                     Alert.alert('Search Disabled', 'Search is not available for the Saved List.');
+                                    setSearchTerm('');
                                 } else {
-                                    fetchDestinations('All', searchTerm);
+                                    fetchDestinations(selectedSort, searchTerm); // Pass current sort and search term
                                 }
                             }}
                         />
@@ -144,8 +145,12 @@ export default function HomeScreen() {
                 <View className="mb-4">
                     <SortCategories
                         onSortChange={(sort) => {
-                            setSelectedSort(sort); // Update selected sort state
-                            fetchDestinations(sort);
+                            if (sort === 'Saved List') {
+                                Alert.alert('Search Disabled', 'Search is not available for the Saved List.');
+                                setSearchTerm('');
+                            }
+                            setSelectedSort(sort);
+                            fetchDestinations(sort, searchTerm);
                         }}
                     />
                 </View>
