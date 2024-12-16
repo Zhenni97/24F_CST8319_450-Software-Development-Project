@@ -60,7 +60,7 @@ const fetchFavorites = async (callback) => {
     const sql = 'SELECT * FROM favorites WHERE user_id = ?';
     try {
         const rows = await db.getAllAsync(sql, [1]);  // Hardcoded user ID for now
-        console.log('Fetched favorites:', rows);
+        console.log('Fetched all favorites');
         if (callback) callback(rows.map(favorite => ({
             id: favorite.id,
             title: favorite.title,

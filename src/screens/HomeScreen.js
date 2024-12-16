@@ -16,6 +16,7 @@ const topMargin = ios ? 'mt-3' : 'mt-10';
 export default function HomeScreen() {
     const [destinationData, setDestinationData] = useState([]); // State to store fetched destination data
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSort, setSelectedSort] = useState('All');
     const navigation = useNavigation();
 
 
@@ -128,14 +129,25 @@ export default function HomeScreen() {
                             className="flex-1 text-base mb-1 pl-1 tracking-wider"
                             value={searchTerm}
                             onChangeText={(text) => setSearchTerm(text)}
-                            onSubmitEditing={() => fetchDestinations('All', searchTerm)}
+                            onSubmitEditing={() => {
+                                if (selectedSort === 'Saved List') {
+                                    Alert.alert('Search Disabled', 'Search is not available for the Saved List.');
+                                } else {
+                                    fetchDestinations('All', searchTerm);
+                                }
+                            }}
                         />
                     </View>
                 </View>
 
                 {/* Sort categories section */}
                 <View className="mb-4">
-                    <SortCategories onSortChange={fetchDestinations} />
+                    <SortCategories
+                        onSortChange={(sort) => {
+                            setSelectedSort(sort); // Update selected sort state
+                            fetchDestinations(sort);
+                        }}
+                    />
                 </View>
 
                 {/* Categories section */}
