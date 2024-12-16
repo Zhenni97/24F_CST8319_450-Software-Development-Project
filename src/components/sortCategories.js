@@ -5,7 +5,7 @@ import { sortCategoryData } from '../constants'; // Import available sorting cat
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen'; // To make the UI responsive
 import { theme } from '../theme'; // To apply the custom theme for styling
 
-export default function SortCategories({ onSortChange }) {
+export default function SortCategories({ onSortChange, onInitialSortLoad }) {
     // State to store the currently active sorting option
     const [activeSort, setActiveSort] = useState('All');
 
@@ -13,9 +13,9 @@ export default function SortCategories({ onSortChange }) {
         // Load the stored sorting preference when the component mounts
         const loadSortPreference = async () => {
             const savedSort = await AsyncStorage.getItem('activeSort'); // Get the saved sort from AsyncStorage
-            if (savedSort) {
-                setActiveSort(savedSort); // Set the active sort to the saved value
-            }
+            const initialSort = savedSort || 'All';
+            setActiveSort(initialSort);
+            onInitialSortLoad(initialSort);
         };
         loadSortPreference(); // Run the function to load the preference
     }, []); // Empty dependency array ensures this runs only once when the component mounts

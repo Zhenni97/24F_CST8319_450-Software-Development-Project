@@ -16,7 +16,7 @@ const topMargin = ios ? 'mt-3' : 'mt-10';
 export default function HomeScreen() {
     const [destinationData, setDestinationData] = useState([]); // State to store fetched destination data
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedSort, setSelectedSort] = useState('All');
+    const [selectedSort, setSelectedSort] = useState(null);
     const navigation = useNavigation();
 
     // Function to fetch destination data based on the selected sort category
@@ -102,8 +102,10 @@ export default function HomeScreen() {
 
     // Fetch all destinations on component mount
     useEffect(() => {
-        fetchDestinations('All', 'breakfast'); // Default sorting category
-    }, []); // Empty dependency array ensures this runs only once
+        if (selectedSort !== null) {
+            fetchDestinations(selectedSort, searchTerm);
+        }
+    }, [selectedSort]); // Empty dependency array ensures this runs only once
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -146,12 +148,12 @@ export default function HomeScreen() {
                     <SortCategories
                         onSortChange={(sort) => {
                             if (sort === 'Saved List') {
-                                Alert.alert('Search Disabled', 'Search is not available for the Saved List.');
                                 setSearchTerm('');
                             }
                             setSelectedSort(sort);
                             fetchDestinations(sort, searchTerm);
                         }}
+                        onInitialSortLoad={(initialSort) => setSelectedSort(initialSort)}
                     />
                 </View>
 
