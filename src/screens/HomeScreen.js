@@ -15,15 +15,19 @@ const topMargin = ios ? 'mt-3' : 'mt-10';
 
 export default function HomeScreen() {
     const [destinationData, setDestinationData] = useState([]); // State to store fetched destination data
+    const [searchTerm, setSearchTerm] = useState('');
     const navigation = useNavigation();
 
 
     // Function to fetch destination data based on the selected sort category
-    const fetchDestinations = async (sort) => {
+    const fetchDestinations = async (sort = 'All', search = '') => {
         let apiUrl = '';
 
         // Adjust API URL based on the selected sorting option
-        if (sort === 'All') {
+        if (search) {
+            apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random&titleMatch=${encodeURIComponent(search)}`;
+        }
+        else if (sort === 'All') {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=random`;
         } else if (sort === 'Most Popular') {
             apiUrl = `https:\\api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&includeNutrition=true&addRecipeInformation=true&sort=popularity`;
@@ -119,9 +123,12 @@ export default function HomeScreen() {
                     <View className="flex-row items-center bg-neutral-100 rounded-full p-4 space-x-2 pl-6">
                         <MagnifyingGlassIcon size={20} strokeWidth={3} color="gray" />
                         <TextInput
-                            placeholder="Search receipt"
+                            placeholder="Search recipes"
                             placeholderTextColor={'gray'}
                             className="flex-1 text-base mb-1 pl-1 tracking-wider"
+                            value={searchTerm}
+                            onChangeText={(text) => setSearchTerm(text)}
+                            onSubmitEditing={() => fetchDestinations('All', searchTerm)}
                         />
                     </View>
                 </View>
