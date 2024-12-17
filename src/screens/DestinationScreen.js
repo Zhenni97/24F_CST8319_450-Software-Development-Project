@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, Platform } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Image, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { ChevronLeftIcon } from 'react-native-heroicons/outline';
 import { ClockIcon, HeartIcon, MapPinIcon, SunIcon } from 'react-native-heroicons/solid';
 import { useNavigation } from '@react-navigation/native';
 import { theme } from '../theme';
+import { saveFavorite, deleteFavorite, isItemFavorite } from '../database/database';
 
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : 'mt-10';
@@ -15,6 +16,14 @@ export default function DestinationScreen(props) {
     const item = props.route.params;  // Get data passed from previous screen
     const navigation = useNavigation();
     const [isFavourite, toggleFavourite] = useState(false);  // State to track if destination is marked as favourite
+    const [isFav, toggleFav] = useState(false);
+
+    useEffect(() => {
+        // Check if item is already a favorite
+        isItemFavorite(item.title, item.user_id, (result) => {
+            toggleFav(result); // Update the state based on database check
+        });
+    }, [item.title, item.user_id]);
 
   return (
     <View className="bg-white flex-1">
@@ -101,9 +110,38 @@ export default function DestinationScreen(props) {
             <TouchableOpacity
                 style={{ backgroundColor: theme.bg(0.8), height: wp(15), width: wp(50) }}
                 className="mb-6 mx-auto flex justify-center items-center rounded-full"
+                onPress={() => {
+                    if (isFav) {
+                        // Remove from favorites
+                        deleteFavorite(item, (success) => {
+                            if (success) {
+                                toggleFav(false); // Update state to reflect "not saved"
+                                Alert.alert('Removed', `${item.title} has been removed from your favorites.`);
+                            } else {
+                                Alert.alert('Error', 'Unable to remove the item. Try again.');
+                            }
+                        });
+                    }
+                    else {
+                        saveFavorite(item, (success, id) => {
+                            if (success) {
+                                toggleFav(true);
+                                Alert.alert(
+                                    'Success',
+                                    `${item.title} was successfully added to your favorites!`
+                                );
+                            } else {
+                                Alert.alert(
+                                    'Info',
+                                    'This item is already in your favorites.'
+                                );
+                            }
+                        });
+                    }
+                }}
             >
                 <Text className="text-white font-bold" style={{ fontSize: wp(5.5) }}>
-                    Save now  {/* Save button text */}
+                    {isFav ? 'Delete' : 'Save now'}
                 </Text>
             </TouchableOpacity>
         </View>
