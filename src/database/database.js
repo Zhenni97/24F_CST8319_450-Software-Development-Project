@@ -87,11 +87,11 @@ const fetchFavorites = async (callback) => {
     }
 };
 
-const deleteFavorite = async (id, callback) => {
-    const sql = 'DELETE FROM favorites WHERE id = ?';
+const deleteFavorite = async (item, callback) => {
+    const sql = 'DELETE FROM favorites WHERE user_id = ? AND title = ?;';
     try {
-        const result = await db.runAsync(sql, [id]);
-        console.log(`Favorite with ID ${id} deleted.`);
+        const result = await db.runAsync(sql, [1, item.title]);
+        console.log(`Favorite ${item.title} deleted.`);
         if (callback) callback(true); // Success callback
     } catch (error) {
         console.error('Error deleting favorite:', error);
@@ -123,6 +123,24 @@ const resetDatabase = async (callback) => {
     }
 }
 
+const isItemFavorite = async (title, user_id, callback) => {
+    const sql = 'SELECT COUNT(*) AS count FROM favorites WHERE user_id = ? AND title = ?;';
+
+    try {
+        const result = await db.getAllAsync(sql, [1, title]);
+
+        // Check if result is not empty and extract the count
+        const count = result.length > 0 ? result[0]?.count : 0;
+        const isFavorite = count > 0;
+
+        console.log(`isFavorite: ${isFavorite}`);
+        callback(isFavorite);
+    } catch (error) {
+        console.error('Error checking favorite:', error);
+        callback(false);
+    }
+}
+
 openDatabase();
 
-export { saveFavorite, fetchFavorites, deleteFavorite };
+export { saveFavorite, fetchFavorites, deleteFavorite, isItemFavorite };
