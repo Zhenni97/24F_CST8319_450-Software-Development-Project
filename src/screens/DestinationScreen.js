@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, Platform } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView, Platform, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -102,7 +102,21 @@ export default function DestinationScreen(props) {
             <TouchableOpacity
                 style={{ backgroundColor: theme.bg(0.8), height: wp(15), width: wp(50) }}
                 className="mb-6 mx-auto flex justify-center items-center rounded-full"
-                onPress={() => saveFavorite(item)} // call savefavorite
+                onPress={() =>
+                    saveFavorite(item, (success, id) => {
+                        if (success) {
+                            Alert.alert(
+                                'Success',
+                                `${item.title} was successfully added to your favorites!`
+                            );
+                        } else {
+                            Alert.alert(
+                                'Info',
+                                'This item is already in your favorites.'
+                            );
+                        }
+                    })
+                }
             >
                 <Text className="text-white font-bold" style={{ fontSize: wp(5.5) }}>
                     Save now  {/* Save button text */}

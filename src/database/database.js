@@ -32,12 +32,24 @@ const createTable = async () => {
 }; 
 
 const saveFavorite = async (item, callback) => {
-    const sql = `
+    const checkSql = `SELECT COUNT(*) as count FROM favorites WHERE user_id = ? AND title = ?`;
+    const insertSql = `
         INSERT INTO favorites (user_id, title, price, longDescription, duration, distance, weather, image)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     try {
-        const result = await db.runAsync(sql, [
+        const result = await db.getAllAsync(checkSql, [1, item.title]);
+
+        // Extract the count value
+        const count = result[0]?.count || 0;
+
+        if (count > 0) {
+            console.log('Item already in favorites:', item.title);
+            if (callback) callback(false, null); // Indicate duplicate to callback
+            return;
+        }
+
+        const insertResult = await db.runAsync(insertSql, [
             1, // Hardcoded user ID for now
             item.title,
             item.price,
@@ -47,8 +59,8 @@ const saveFavorite = async (item, callback) => {
             item.weather,
             item.image
         ]);
-        console.log('Favorite saved:', result.lastInsertRowId);
-        if (callback) callback(true, result.lastInsertRowId); // Success callback
+        console.log('Favorite saved:', insertResult.lastInsertRowId);
+        if (callback) callback(true, insertResult.lastInsertRowId); // Success callback
     } catch (error) {
         console.error('Error saving favorite:', error);
         if (callback) callback(false, null); // Error callback
