@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { theme } from '../theme'; // Custom theme styles
-import { loginUser, registerUser } from '../database/database'; // Import database functions
+import { loginUser, registerUser } from '../database/database2'; // Import database functions
 
 // Determine if the platform is iOS for styling
 const ios = Platform.OS === 'ios';
