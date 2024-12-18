@@ -69,7 +69,7 @@ const loginUser = async (email, passwordHash, callback) => {
         WHERE email = ? AND passwordHash = ?;
     `;
     try {
-        const user = await db.getAsync(sql, [email, passwordHash]);
+        const user = await db.getAllAsync(sql, [email, passwordHash]);
         if (user) {
             console.log('User authenticated:', user);
             if (callback) callback(true, user); // Pass user details
@@ -104,7 +104,7 @@ const fetchAuthenticatedUser = async (callback) => {
         SELECT * FROM users WHERE isAuthenticated = 1;
     `;
     try {
-        const user = await db.getAsync(sql);
+        const user = await db.getAllAsync(sql);
         console.log('Authenticated user:', user);
         if (callback) callback(user);
     } catch (error) {
